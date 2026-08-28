@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel &amp; Plan</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --cream:#cfd3fc; --surface:#f1e8e8; --ink:#2c302e; --muted:#6b7280; --line:#a6741e;
+      --pink:#da476c; --pink-soft:#8f876c; --blue:#5b9bd5; --blue-soft:#ebf4fa;
+      --green:#5c9e7a; --green-soft:#5da16c; --beige:#c5a47e; --beige-soft:#cfb080;
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; font-family:"Alexandria",sans-serif; color:var(--ink); background:var(--cream); line-height:1.7; overflow-x:hidden; }
+    button,a { -webkit-tap-highlight-color:transparent; }
+    .site-shell { width:100%; }
+    .page-width { width:100%; max-width:1200px; margin:auto; padding-inline:24px; }
+    .site-header { position:sticky; top:0; z-index:50; background:rgba(250,247,242,.92); backdrop-filter:blur(12px); border-bottom:1px solid rgba(235,229,219,.75); }
+    .nav-row { min-height:82px; display:flex; align-items:center; justify-content:space-between; gap:22px; }
+    .brand { color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:9px; font-weight:800; white-space:nowrap; font-size:1.25rem; font-family:"Tajawal",sans-serif; }
+    .brand-dot { width:10px; height:10px; border-radius:50%; background:var(--pink); }
+    .nav-list { display:flex; align-items:center; gap:27px; list-style:none; padding:0; margin:0; }
+    .nav-list a { color:var(--muted); text-decoration:none; font-weight:500; transition:.25s ease; }
+    .nav-list a:hover { color:var(--ink); }
+    .pill-dark,.pill-light { display:inline-flex; justify-content:center; align-items:center; border-radius:999px; text-decoration:none; font-weight:700; transition:.25s ease; cursor:pointer; border:1px solid transparent; }
+    .pill-dark { background:var(--ink); color:#fbfbfb; padding:10px 21px; }
+    .pill-dark:hover { background:#404643; transform:translateY(-2px); }
+    .pill-light { background:#fff; color:var(--ink); padding:13px 30px; border-color:var(--line); }
+    .pill-light:hover { background:#a48c60; transform:translateY(-2px); }
+    .hero { text-align:center; padding:82px 0 48px; }
+    .hero-tag { display:inline-flex; align-items:center; padding:6px 18px; border:1px solid rgba(197,164,126,.2); border-radius:999px; margin-bottom:23px; font-weight:700; }
+    .hero h1 { max-width:820px; margin:0 auto 18px; line-height:1.32; font-weight:800; }
+    .highlight { position:relative; z-index:0; white-space:nowrap; }
+    .highlight:after { content:""; position:absolute; z-index:-1; height:12px; right:-4px; left:-4px; bottom:5px; border-radius:6px; background:var(--pink-soft); }
+    .hero-copy { color:var(--muted); max-width:705px; margin:0 auto 32px; font-size:1.1rem; }
+    .hero-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:14px; }
+    .filter-area { padding:20px 0 38px; }
+    .filter-tabs { display:flex; justify-content:center; gap:11px; flex-wrap:wrap; }
+    .filter-btn { border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:999px; padding:10px 22px; font:700 .94rem "Tajawal",sans-serif; cursor:pointer; transition:.25s ease; }
+    .filter-btn:hover,.filter-btn:focus-visible { border-color:var(--ink); color:var(--ink); outline:none; }
+    .filter-btn.active { background:var(--ink); color:#ebdddd; border-color:var(--ink); }
+    .product-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; padding-bottom:55px; }
+    .product-card { display:flex; flex-direction:column; min-width:0; overflow:hidden; background:#faf9f9; border:1px solid var(--line); border-radius:20px; box-shadow:0 4px 15px rgba(0,0,0,.03); transition:.3s ease; }
+    .product-card:hover { transform:translateY(-6px); box-shadow:0 13px 28px rgba(0,0,0,.07); border-color:لأ#d58871; }
+    .product-card.is-hidden { display:none; }
+    .card-visual { height:215px; padding:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .card-body { display:flex; flex:1; flex-direction:column; padding:23px; }
+    .badge-row { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+    .badge { padding:3px 11px; border-radius:999px; font-weight:700; font-size:.79rem; }
+    .type { color:var(--muted); font-size:.84rem; }
+    .card-title { margin:0 0 9px; font-weight:800; line-height:1.45; }
+    .card-copy { margin:0 0 17px; color:var(--muted); font-size:.94rem; }
+    .features { list-style:none; padding:0; margin:auto 0 21px; }
+    .features li { display:flex; gap:8px; align-items:flex-start; margin:5px 0; font-size:.87rem; }
+    .features li:before { content:"✓"; flex:0 0 18px; width:18px; height:18px; border-radius:50%; text-align:center; line-height:18px; background:var(--green-soft); color:var(--green); font-weight:800; font-size:.73rem; margin-top:3px; }
+    .card-footer { border-top:1px solid var(--line); padding-top:16px; }
+    .preview-btn { width:100%; padding:10px 15px; border-radius:12px; cursor:pointer; font:700 .95rem "Tajawal",sans-serif; transition:.25s ease; border:1px solid var(--line); }
+    .preview-btn:hover { background:var(--ink)!important; border-color:var(--ink)!important; color:#fff!important; }
+    .benefits { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin:0 0 78px; padding:57px 38px; background:#fff; border:1px solid var(--line); border-radius:30px; text-align:center; }
+    .benefit-icon { width:60px; height:60px; display:grid; place-items:center; margin:0 auto 13px; border-radius:50%; font-size:1.45rem; }
+    .benefit-title { margin:0 0 6px; font-weight:800; }
+    .benefit-copy { margin:0; color:var(--muted); font-size:.94rem; }
+    .site-footer { background:#fff; border-top:1px solid var(--line); padding:64px 0 28px; }
+    .footer-copy { color:var(--muted); margin:9px 0 22px; }
+    .contact-card { max-width:620px; margin:0 auto; text-align:center; }
+    .contact-box { background:var(--cream); border:1px solid var(--line); border-radius:22px; padding:26px; box-shadow:0 8px 25px rgba(0,0,0,.02); text-align:right; }
+    .form-input { width:100%; padding:13px 16px; border:1px solid var(--line); border-radius:12px; background:#fff; font-family:"Tajawal",sans-serif; font-size:.96rem; color:var(--ink); outline:none; transition:.25s ease; margin-bottom:14px; display:block; }
+    .form-input:focus { border-color:var(--pink); box-shadow:0 0 0 3px var(--pink-soft); }
+    .form-textarea { min-height:110px; resize:vertical; }
+    .copyright { border-top:1px solid var(--line); padding-top:22px; margin-top:40px; color:var(--muted); font-size:.84rem; text-align:center; }
+    .modal-overlay { display:none; position:fixed; inset:0; z-index:80; align-items:center; justify-content:center; background:rgba(0,0,0,.45); backdrop-filter:blur(5px); padding:20px; }
+    .modal-overlay.active { display:flex; }
+    .modal-card { position:relative; width:100%; max-width:900px; padding:33px; background:#fff; border-radius:20px; box-shadow:0 24px 70px rgba(0,0,0,.2); }
+    .modal-close { position:absolute; top:17px; left:17px; width:37px; height:37px; border:0; border-radius:50%; background:var(--cream); color:var(--ink); display:grid; place-items:center; cursor:pointer; }
+    .modal-title { margin:0 0 10px 0; font-weight:800; font-size:1.4rem; }
+    .modal-copy { color:var(--muted); margin:0 0 23px; font-size:1rem; }
+    .modal-view { display:none; }
+    .modal-view.active { display:block; }
+    .modal-action { width:100%; }
+    @media (max-width:900px) { .product-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:680px) {
+      .nav-list { display:none; } .nav-row { min-height:73px; } .hero { padding:61px 0 38px; }
+      .product-grid,.benefits { grid-template-columns:1fr; } .benefits { padding:42px 25px; margin-bottom:56px; }
+      .hero-actions { flex-direction:column; align-items:stretch; max-width:270px; margin:auto; }
+      .card-visual { height:205px; } .modal-card { padding:31px 24px 25px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <div class="page-width nav-row">
+        <a href="#top" class="brand">
+          <span class="brand-dot"></span>
+          <span>Pixel &amp; Plan</span>
+        </a>
+        <nav aria-label="التنقل الرئيسي">
+          <ul class="nav-list">
+            <li><a href="#products">المنتجات</a></li>
+            <li><a href="#about">المميزات</a></li>
+            <li><a href="#contact">تواصل معي</a></li>
+          </ul>
+        </nav>
+        <a href="#contact" class="pill-dark">طلب تصميم خاص</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="page-width">
+          <div class="hero-tag" style="background: rgb(245, 239, 230); color: rgb(197, 164, 126);">✨ تصاميم عصرية بسيطة وهادئة</div>
+          <h1 style="color: rgb(44, 48, 46); font-size: 2.3rem;">أدواتك اليومية لحياة أكثر <span class="highlight">ترتيباً وهدوءاً</span></h1>
+          <p class="hero-copy">مجموعة متكاملة من جداول Google Sheets الذكية، المخططات الشاملة، وكتب التلوين الفنية لمساعدتك على تنظيم يومك وتصفية ذهنك بكل راحة وسلاسة.</p>
+          <div class="hero-actions">
+            <a href="#products" class="pill-dark">تصفح المنتجات</a>
+            <a href="#about" class="pill-light">عن التصاميم</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="products" class="page-width">
+        <div class="filter-area">
+          <div class="filter-tabs" role="tablist">
+            <button type="button" class="filter-btn active" data-filter="all">الكل</button>
+            <button type="button" class="filter-btn" data-filter="sheets">جداول Google Sheets</button>
+            <button type="button" class="filter-btn" data-filter="planners">البلانرز والتنظيم</button>
+            <button type="button" class="filter-btn" data-filter="coloring">كتب التلوين والفنون</button>
+          </div>
+        </div>
+
+        <div class="product-grid">
+          <!-- منتج 1 -->
+          <article class="product-card" data-category="sheets">
+            <div class="card-visual" style="background: linear-gradient(135deg, rgb(218, 231, 241), rgb(190, 216, 234));">
+              <img class="w-full h-full object-cover" loading="lazy" src="https://images.pexels.com/photos/6962993/pexels-photo-6962993.jpeg?auto=compress&cs=tinysrgb&w=800" alt="إدارة مالية وميزانية">
+            </div>
+            <div class="card-body">
+              <div class="badge-row">
+                <span class="badge" style="background: rgb(235, 244, 250); color: rgb(91, 155, 213);">Google Sheets</span>
+                <span class="type">إدارة مالية</span>
+              </div>
+              <h2 class="card-title" style="font-size: 1.25rem;">منظم الميزانية والمصاريف الذكي</h2>
+              <p class="card-copy">تحكم في أموالك بدون تعقيد. جدول تفاعلي يحسب تلقائياً مدخولك، مصاريفك وادخارك مع رسوم بيانية توضيحية شاملة.</p>
+              <ul class="features">
+                <li>حسابات وتحديثات تلقائية بالكامل</li>
+                <li>رسوم بيانية توضح حركة الأموال</li>
+                <li>توزيع مالي للمصاريف والادخار</li>
+              </ul>
+              <div class="card-footer">
+                <button type="button" class="preview-btn" data-modal="modal-1" style="background: rgb(250, 247, 242); color: rgb(44, 48, 46);">معاينة وتفاصيل</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- منتج 2 -->
+          <article class="product-card" data-category="sheets">
+            <div class="card-visual" style="background: linear-gradient(135deg, rgb(213, 231, 218), rgb(185, 216, 194));">
+              <img class="w-full h-full object-cover" loading="lazy" src="https://images.pexels.com/photos/30635719/pexels-photo-30635719.jpeg?auto=compress&cs=tinysrgb&w=800" alt="تخطيط الوجبات">
+            </div>
+            <div class="card-body">
+              <div class="badge-row">
+                <span class="badge" style="background: rgb(234, 243, 236); color: rgb(92, 158, 122);">Google Sheets</span>
+                <span class="type">مطبخ وتنظيم</span>
+              </div>
+              <h2 class="card-title" style="font-size: 1.25rem;">مخطط الوجبات وقائمة التسوق الذكية</h2>
+              <p class="card-copy">وداعاً لحيرة ماذا نطبخ اليوم. خطط لوجبات أسبوعك بكل أريحية وجهز قائمة التسوق والمقادير تلقائياً لتوفير الوقت والجهد.</p>
+              <ul class="features">
+                <li>جدول وجبات لـ 7 أيام أسبوعياً</li>
+                <li>قائمة تسوق ومشتريات تفاعلية</li>
+                <li>خانة خاصة بالملاحظات والوصفات</li>
+              </ul>
+              <div class="card-footer">
+                <button type="button" class="preview-btn" data-modal="modal-2" style="background: rgb(250, 247, 242); color: rgb(44, 48, 46);">معاينة وتفاصيل</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- منتج 3 -->
+          <article class="product-card" data-category="sheets">
+            <div class="card-visual" style="background: linear-gradient(135deg, rgb(229, 218, 203), rgb(211, 190, 163));">
+              <img class="w-full h-full object-cover" loading="lazy" src="https://images.pexels.com/photos/37386478/pexels-photo-37386478.jpeg?auto=compress&cs=tinysrgb&w=800" alt="متتبع العادات">
+            </div>
+            <div class="card-body">
+              <div class="badge-row">
+                <span class="badge" style="background: rgb(245, 239, 230); color: rgb(197, 164, 126);">Google Sheets</span>
+                <span class="type">تطوير الذات</span>
+              </div>
+              <h2 class="card-title" style="font-size: 1.25rem;">متتبع العادات وبناء الروتين اليومي</h2>
+              <p class="card-copy">الخطوات البسيطة تصنع الفرق. تتبع تقدمك اليومي بصرياً واحتفل باستمراريتك والتزامك مع مؤشرات إنجاز تحفيزية.</p>
+              <ul class="features">
+                <li>مؤشرات تقدم ونسب إنجاز مرئية</li>
+                <li>تتبع شهري وسنوي متكامل</li>
+                <li>تصميم مريح للعين بدون تشتيت</li>
+              </ul>
+              <div class="card-footer">
+                <button type="button" class="preview-btn" data-modal="modal-3" style="background: rgb(250, 247, 242); color: rgb(44, 48, 46);">معاينة وتفاصيل</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- منتج 4 -->
+          <article class="product-card" data-category="coloring">
+            <div class="card-visual" style="background: linear-gradient(135deg, rgb(239, 211, 220), rgb(232, 177, 193));">
+              <img class="w-full h-full object-cover" loading="lazy" src="https://images.pexels.com/photos/30825645/pexels-photo-30825645.jpeg?auto=compress&cs=tinysrgb&w=800" alt="كتاب ماندالا للتلوين">
+            </div>
+            <div class="card-body">
+              <div class="badge-row">
+                <span class="badge" style="background: rgb(253, 232, 237); color: rgb(224, 122, 147);">كتاب تلوين</span>
+                <span class="type">استرخاء وتأمل</span>
+              </div>
+              <h2 class="card-title" style="font-size: 1.25rem;">كتاب ماندالا للراحة وتصفية الذهن</h2>
+              <p class="card-copy">مساحتك الخاصة للهدوء والتركيز. مجموعة مميزة من تصاميم الماندالا المتناسقة التي تأخذك في رحلة استرخاء.</p>
+              <ul class="features">
+                <li>تصاميم ماندالا عالية الدقة (PDF)</li>
+                <li>جاهز للطباعة أو التلوين الرقمي</li>
+                <li>تدرج في مستوى التفاصيل والعمق</li>
+              </ul>
+              <div class="card-footer">
+                <button type="button" class="preview-btn" data-modal="modal-4" style="background: rgb(250, 247, 242); color: rgb(44, 48, 46);">معاينة وتفاصيل</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- منتج 5 -->
+          <article class="product-card" data-category="coloring">
+            <div class="card-visual" style="background: linear-gradient(135deg, rgb(239, 211, 220), rgb(232, 177, 193));">
+              <img class="w-full h-full object-cover" loading="lazy" src="https://images.pexels.com/photos/29233755/pexels-photo-29233755.jpeg?auto=compress&cs=tinysrgb&w=800" alt="رسومات إبداعية">
+            </div>
+            <div class="card-body">
+              <div class="badge-row">
+                <span class="badge" style="background: rgb(253, 232, 237); color: rgb(224, 122, 147);">كتاب تلوين</span>
+                <span class="type">رسومات إبداعية</span>
+              </div>
+              <h2 class="card-title" style="font-size: 1.25rem;">كتاب الرسومات الإبداعية المتنوعة</h2>
+              <p class="card-copy">تشكيلة واسعة من الرسومات العصرية اللطيفة والجمالية، مناسبة للتلوين في أي وقت لإطلاق العنان لخيالك.</p>
+              <ul class="features">
+                <li>رسومات خطية واضحة ومميزة</li>
+                <li>مناسب لجميع الأعمار ومحبي الفن</li>
+                <li>ملف بصيغة PDF بجودة عالية</li>
+              </ul>
+              <div class="card-footer">
+                <button type="button" class="preview-btn" data-modal="modal-5" style="background: rgb(250, 247, 242); color: rgb(44, 48, 46);">معاينة وتفاصيل</button>
+              </div>
+            </div>
+          </article>
+
+         <article class="product-card" data-category="planners">
+  <div class="card-visual" style="background: linear-gradient(135deg, rgb(213, 231, 218), rgb(185, 216, 194));">
+    <img class="w-full h-full object-cover" loading="lazy" src="images/10.png" alt="بلانر الأهداف والحياة الشامل">
+  </div>
+  <div class="card-body">
+    <div class="badge-row">
+      <span class="badge" style="background: rgb(234, 243, 236); color: rgb(92, 158, 122);">مخطط شامل</span>
+      <span class="type">رياضة • تدريس • منزل</span>
+    </div>
+    <h2 class="card-title" style="font-size: 1.25rem;">بلانر الأهداف والحياة الشامل</h2>
+    <p class="card-copy">مخطط شامل مصمم لمرافقتك في شتى جوانب حياتك اليومية: جدول التمارين واللياقة، تحضير الدروس، وتنظيم المنزل.</p>
+    <ul class="features">
+      <li>قسم التمارين واللياقة وشرب الماء</li>
+      <li>قسم تحضير الدروس والخطط التعليمية</li>
+      <li>قسم المهام المنزلية وجدول التنظيف</li>
+    </ul>
+    <div class="card-footer">
+      <button type="button" class="preview-btn" data-modal="modal-6" style="background: rgb(250, 247, 242); color: rgb(44, 48, 46);">معاينة وتفاصيل</button>
+    </div>
+  </div>
+</article>
+        </div>
+
+        <section id="about" class="benefits">
+          <article>
+            <div class="benefit-icon" style="background: rgb(235, 244, 250); color: rgb(91, 155, 213);">⚡</div>
+            <h2 class="benefit-title" style="font-size: 1.3rem;">سهولة الاستخدام</h2>
+            <p class="benefit-copy">جداول ومخططات جاهزة للعمل فوراً وبدون أي تعقيدات تقنية.</p>
+          </article>
+          <article>
+            <div class="benefit-icon" style="background: rgb(253, 232, 237); color: rgb(224, 122, 147);">🎨</div>
+            <h2 class="benefit-title" style="font-size: 1.3rem;">طابع مينيماليست مريح</h2>
+            <p class="benefit-copy">ألوان هادئة ومتناسقة تمنحك تركيزاً أعلى وراحة بصرية.</p>
+          </article>
+          <article>
+            <div class="benefit-icon" style="background: rgb(234, 243, 236); color: rgb(92, 158, 122);">🌿</div>
+            <h2 class="benefit-title" style="font-size: 1.3rem;">تحميل فوري وتعديل مرن</h2>
+            <p class="benefit-copy">وصول فوري لملفاتك مع إمكانية التعديل بما يناسب احتياجك.</p>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <!-- النافذة المنبثقة للتفاصيل (Modal) -->
+    <div id="preview-modal" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <button type="button" class="modal-close" aria-label="إغلاق"><i data-lucide="x" style="width: 20px; height: 20px;"></i></button>
+
+        <div id="modal-1" class="modal-view">
+          <h3 class="modal-title">منظم الميزانية والمصاريف الذكي الرقمي</h3>
+<div style="width: 100%; height: 460px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); margin: 15px 0;">
+  <iframe 
+    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSC2XRCCgpVkNWcV1kZGAByGDngkcLWzMdBGkX_-EnLvLyJxAhtiCX8t97t1WPOpxNXBR6XqcODzItv/pubhtml?widget=true&headers=false" 
+    style="width: 100%; height: 100%; border: 0;" 
+    loading="lazy"></iframe>
+</div>
+          <p class="modal-copy">تحكم كامل بدخلك ومصاريفك مع لوحة تحكم ذكية ورسوم بيانية أوتوماتيكية توضح توزيع أموالك بدقة.</p>
+          <a href="#contact" class="pill-dark modal-action" onclick="closeModal()">طلب النموذج الآن</a>
+        </div>
+       <!-- modal-2: مخطط الوجبات -->
+    <div id="modal-2" class="modal-view">
+      <h3 class="modal-title">مخطط الوجبات وقائمة التسوق الذكية رقمي</h3>
+      <div style="width: 100%; height: 460px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); margin: 15px 0;">
+        <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vS_0L3uRgVihZfQmIukFqaK5Wchy22YsRoaap7FeoVCcRgcnAHqJ_s6pxrViw_GqlsQWc6ftSeo6gtD/pubhtml?widget=true&amp;headers=false"" style="width: 100%; height: 100%; border: 0;" loading="lazy"></iframe>
+      </div>
+      <p class="modal-copy">نظم جدول وجبات الأسبوع واجعل قائمة المقادير والمشتريات تُحسب تلقائياً لتوفير الوقت والمال.</p>
+      <a href="#contact" class="pill-dark modal-action" onclick="closeModal()">طلب النموذج الآن</a>
+    </div>
+         
+        <div id="modal-3" class="modal-view">
+          <h3 class="modal-title">متتبع العادات وبناء الروتين اليومي الرقمي</h3>
+          <div style="width: 100%; height: 460px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); margin: 15px 0;">
+  <iframe 
+    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSOT8gK10awCtrX4AqxxtrI76f-q7n16-yydzpB4ysSDTayxZ81Jf9H4y_D-gYRM3Z_HMpMtIoMXr23/pubhtml?widget=true&headers=false"
+    style="width: 100%; height: 100%; border: 0;" 
+    loading="lazy"></iframe>
+</div>
+          <p class="modal-copy">لوحة مريحة بصرياً تساعدك على متابعة عاداتك اليومية والشهرية بنسب إنجاز محفزة وخالية من التشتيت.</p>
+          <a href="#contact" class="pill-dark modal-action" onclick="closeModal()">طلب النموذج الآن</a>
+        </div>
+        <div id="modal-4" class="modal-view">
+          <h3 class="modal-title">كتاب ماندالا للراحة وتصفية الذهن</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
+  <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 260px;">
+    <img src="images/53.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 1">
+  </div>
+  <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 260px;">
+    <img src="images/54.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 2">
+  </div>
+</div>
+          <p class="modal-copy">ملف PDF عالي الجودة جاهز للطباعة أو التلوين عبر التطبيقات الرقمية في أوقات فراغك وهدوئك.</p>
+          <a href="#contact" class="pill-dark modal-action" onclick="closeModal()">تحميل الكتاب</a>
+        </div>
+        <div id="modal-5" class="modal-view">
+          <h3 class="modal-title">كتاب الرسومات الإبداعية المتنوعة</h3>
+         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 15px 0;">
+  <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 220px;">
+    <img src="images/50.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 1">
+  </div>
+  <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 220px;">
+    <img src="images/51.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 2">
+  </div>
+  <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 220px;">
+    <img src="images/52.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 3">
+  </div>
+  <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 220px;">
+    <img src="images/55.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 4">
+  </div>
+</div>
+          <p class="modal-copy">تشكيلة رسومات خطية وفنية ممتعة تناسب جميع الفئات لإطلاق طاقتك الإبداعية.</p>
+          <a href="#contact" class="pill-dark modal-action" onclick="closeModal()">تحميل الكتاب</a>
+        </div>
+
+       <div id="modal-6" class="modal-view">
+      <h3 class="modal-title">بلانر الأهداف والحياة الشامل</h3>
+      
+     <!-- شبكة الصور الـ 6 -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 15px 0;">
+        <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 220px;">
+          <img src="images/38.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 1">
+        </div>
+        <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 220px;">
+          <img src="images/39.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 2">
+        </div>
+        <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 220px;">
+          <img src="images/40.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 3">
+        </div>
+        <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 220px;">
+          <img src="images/41.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 4">
+        </div>
+        <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 220px;">
+          <img src="images/42.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 5">
+        </div>
+        <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fdfdfd; height: 220px;">
+          <img src="images/62.png" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="معاينة 6">
+        </div>
+      </div>
+  <p class="modal-copy">مخطط عملي متكامل لتنظيم جداول التمارين واللياقة، تحضير الدروس، وجدول التنظيم المنزلي واليومي</p>
+  <a href="#contact" class="pill-dark modal-action" onclick="closeModal()">طلب النموذج الآن</a>
+</div>
+         
+        </div>
+      </div>
+    </div>
+
+    <!-- قسم التواصل المباشر مع Formspree -->
+    <footer id="contact" class="site-footer">
+      <div class="page-width">
+        <div class="contact-card">
+          <div class="hero-tag" style="background: var(--pink-soft); color: var(--pink); margin-bottom: 12px;">💌 تواصل مباشر وسريع</div>
+          <h2 class="benefit-title" style="font-size: 1.6rem; margin-bottom: 8px;">هل ترغب في نموذج خاص أو لديك استفسار؟</h2>
+          <p class="footer-copy">اكتب رسالتك وسأجيبك مباشرة على بريدك الإلكتروني:</p>
+          <form action="https://formspree.io/f/mbgjrzrg" method="POST" class="contact-box">
+            <input type="text" name="name" placeholder="الاسم و اللقب" required class="form-input">
+            <input type="email" name="_replyto" placeholder="بريدك الإلكتروني (للرد عليك)" required class="form-input">
+            <textarea name="message" rows="4" placeholder="تفاصيل الطلب أو الاستفسار..." required class="form-input form-textarea"></textarea>
+            
+            <button type="submit" class="pill-dark" style="width: 100%; border: none; padding: 13px; font-size: 1rem; border-radius: 12px; cursor: pointer;">
+              إرسال الرسالة الآن ✉️
+            </button>
+          </form>
+
+          <div class="copyright">
+            جميع الحقوق محفوظة &copy; 2026 Pixel &amp; Plan
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // تهيئة الأيقونات
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+
+    // تصفية المنتجات
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const productCards = document.querySelectorAll('.product-card');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.getAttribute('data-filter');
+        productCards.forEach(card => {
+          if (filter === 'all' || card.getAttribute('data-category') === filter) {
+            card.classList.remove('is-hidden');
+          } else {
+            card.classList.add('is-hidden');
+          }
+        });
+      });
+    });
+
+    // التحكم بالـ Modal
+    const modalOverlay = document.getElementById('preview-modal');
+    const modalCloseBtn = document.querySelector('.modal-close');
+    const previewButtons = document.querySelectorAll('.preview-btn');
+    const modalViews = document.querySelectorAll('.modal-view');
+
+    function openModal(modalId) {
+      modalViews.forEach(view => view.classList.remove('active'));
+      const activeView = document.getElementById(modalId);
+      if (activeView) {
+        activeView.classList.add('active');
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal() {
+      modalOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    previewButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        openModal(btn.getAttribute('data-modal'));
+      });
+    });
+
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+        closeModal();
+      }
+    });
+  </script>
+  <!-- نافذة تكبير الصورة (Lightbox) -->
+<div id="image-zoom-overlay" onclick="closeImageZoom()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 99999; justify-content: center; align-items: center; cursor: zoom-out; backdrop-filter: blur(4px);">
+  <span style="position: absolute; top: 20px; right: 30px; font-size: 35px; color: #fff; cursor: pointer; font-weight: bold;">&times;</span>
+  <img id="zoomed-image" src="" alt="صورة مكبرة" style="max-width: 90%; max-height: 85vh; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: contain; animation: zoomIn 0.25s ease;">
+</div>
+
+<style>
+  @keyframes zoomIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal-view img {
+    cursor: zoom-in;
+    transition: transform 0.2s ease;
+  }
+  .modal-view img:hover {
+    transform: scale(1.03);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.modal-view img').forEach(img => {
+      img.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const zoomOverlay = document.getElementById('image-zoom-overlay');
+        const zoomedImg = document.getElementById('zoomed-image');
+        zoomedImg.src = this.src;
+        zoomOverlay.style.display = 'flex';
+      });
+    });
+  });
+
+  function closeImageZoom() {
+    document.getElementById('image-zoom-overlay').style.display = 'none';
+  }
+</script>
+</body>
+</html>
