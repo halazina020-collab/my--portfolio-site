@@ -501,10 +501,10 @@
   }
 </style>
 
-<!-- قسم التقييمات والآراء بنظام النجوم -->
+<!-- قسم التقييمات والآراء المتصل بـ Supabase -->
 <section id="custom-reviews" style="max-width: 650px; margin: 40px auto; padding: 25px; background: #ffffff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); text-align: center; border: 1px solid #eef2f6; font-family: inherit;">
   <h2 style="font-size: 1.4rem; color: #1e293b; margin-bottom: 8px;">🌟 شاركنا رأيك وتقييمك</h2>
-  <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 20px;">نسعد دائماً بآرائكم وملاحظاتكم حول منتجاتنا</p>
+  <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 20px;">نسعد بآرائكم وملاحظاتكم حول منتجاتنا</p>
 
   <!-- نظام النجوم التفاعلي -->
   <div style="margin-bottom: 15px;">
@@ -522,19 +522,27 @@
     
     <textarea id="reviewer-comment" rows="3" placeholder="اكتب رأيك أو تجربتك هنا..." required style="width: 100%; padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; outline: none; resize: vertical; box-sizing: border-box;"></textarea>
 
-    <button type="submit" style="background: #1e293b; color: #ffffff; padding: 12px 20px; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.3s;">
+    <button type="submit" id="submit-btn" style="background: #1e293b; color: #ffffff; padding: 12px 20px; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.3s;">
       إرسال التقييم ⭐
     </button>
   </form>
 
-  <!-- قائمة عرض التقييمات المضافة -->
+  <!-- قائمة عرض التقييمات الحية -->
   <div style="margin-top: 30px; text-align: right; border-top: 1px solid #e2e8f0; padding-top: 20px;">
     <h3 style="font-size: 1.1rem; color: #334155; margin-bottom: 15px;">أحدث التقييمات:</h3>
-    <div id="reviews-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+    <div id="reviews-list" style="display: flex; flex-direction: column; gap: 12px;">
+      <p style="color: #94a3b8; font-size: 0.9rem; text-align: center;">جاري تحميل التقييمات...</p>
+    </div>
   </div>
 </section>
 
+<!-- كود الربط مع قاعدة البيانات Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const supabaseUrl = 'https://akldyalmvruxupynwieq.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrbGR5YWxtdnJ1eHVweW53aWVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5Mjk0NjQsImV4cCI6MjEwMzUwNTQ2NH0.-WxaVai86d3SEqxMZdYAFj1Ek5-mWRL2m4oXa3PSZIw';
+  const db = window.supabase.createClient(supabaseUrl, supabaseKey);
+
   let selectedRating = 5;
   const stars = document.querySelectorAll('#star-rating span');
   
@@ -554,14 +562,15 @@
 
   const form = document.getElementById('review-form');
   const reviewsList = document.getElementById('reviews-list');
+  const submitBtn = document.getElementById('submit-btn');
 
-  function renderReviews() {
-    const saved = JSON.parse(localStorage.getItem('user_reviews') || '[]');
-    if (saved.length === 0) {
+ async function fetchReviews() {
+    const { data, error } = await db.from('reviews').select('*').order('created_at', { ascending: false });
+    if (error || !data || data.length === 0) {
       reviewsList.innerHTML = '<p style="color: #94a3b8; font-size: 0.9rem; text-align: center;">كن أول من يشاركنا رأيه!</p>';
       return;
     }
-    reviewsList.innerHTML = saved.map(r => 
+    reviewsList.innerHTML = data.map(r => 
       <div style="background: #f8fafc; padding: 12px 16px; border-radius: 8px; border-right: 4px solid #f59e0b;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <strong style="color: #1e293b; font-size: 0.95rem;">${r.name}</strong>
@@ -572,25 +581,30 @@
     ).join('');
   }
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('reviewer-name').value.trim();
     const comment = document.getElementById('reviewer-comment').value.trim();
     if (!name || !comment) return;
-    const saved = JSON.parse(localStorage.getItem('user_reviews') || '[]');
-    saved.unshift({ name, comment, stars: selectedRating });
-    localStorage.setItem('user_reviews', JSON.stringify(saved));
 
-    form.reset();
-    selectedRating = 5;
-    updateStars(5);
-    renderReviews();
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'جاري الإرسال...';
+
+    const { error } = await db.from('reviews').insert([{ name, comment, stars: selectedRating }]);
+    
+    if (!error) {
+      form.reset();
+      selectedRating = 5;
+      updateStars(5);
+      await fetchReviews();
+    }
+    
+    submitBtn.disabled = false;
+    submitBtn.innerText = 'إرسال التقييم ⭐';
   });
 
-  renderReviews();
+  fetchReviews();
 </script>
-
-<script>
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.modal-view img').forEach(img => {
       img.addEventListener('click', function(e) {
